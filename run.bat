@@ -1,0 +1,1 @@
+gulp && nodemon app && start "http://localhost:1337"
