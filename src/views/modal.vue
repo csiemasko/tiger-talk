@@ -17,13 +17,14 @@ export default {
             required: true
         }
     },
-    data: () => {
+    data() {
         return {
             closed: false
         }
     },
     methods: {
         close() {
+            alert('closing');
             this.closed = true;        
         }
     }

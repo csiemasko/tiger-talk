@@ -24,6 +24,7 @@ export default {
     components: { message, user, modal }, 
     data () {
         return {
+            uid: null,
             loggedIn: false,
             ui: {
                 title: 'Tiger Talk'
@@ -41,12 +42,13 @@ export default {
     },
     methods: {
         getSession() {
-            return document.cookie && document.cookie.userId ? document.cookie.userId : null;
+            return document.cookie ? document.cookie : null;
         }
     },
-    ready() {
+    mounted() {
         var userId = this.getSession();
         if (userId != null) {
+            alert('cookie is ' + userId);
              this.uid = userId;
              alert('user cookie is present: ' + this.uid);
         }
@@ -54,7 +56,7 @@ export default {
             alert('creating uuid');
             var uuid = require('uuid/v4')();
             this.uid = uuid;
-            document.cookie.userId = uuid;
+            document.cookie = `userId=${uuid}`;
             alert(uuid);
             
         }

@@ -1,6 +1,6 @@
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert(".modal {\n  z-index: 100;\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  opacity: 1;\n  background: rgba(0,0,0,0.5);\n  margin: 0 auto;\n  vertical-align: middle;\n  text-align: center;\n  -ms-flex-line-pack: center;\n      align-content: center;\n}\n.dialog {\n  margin: 0 auto;\n  margin-top: 100px;\n  box-sizing: border-box;\n  background: #fff;\n  max-width: 75%;\n  border-radius: 20px;\n  box-shadow: 0 0 30px rgba(0,0,0,0.5);\n  position: relative;\n  -webkit-transform: scale(1);\n          transform: scale(1);\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: start;\n      -ms-flex-align: start;\n          align-items: flex-start;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n}\n.dialog .dialog-header {\n  box-sizing: border-box;\n  -webkit-box-flex: 0;\n      -ms-flex: 0 1 auto;\n          flex: 0 1 auto;\n  top: 0;\n  width: 100%;\n  padding: 5px;\n  text-align: center;\n  color: #fff;\n  background: #000;\n  font-weight: 100;\n  font-size: 16px;\n}\n.dialog .dialog-header .fa.fa-times-circle-o {\n  float: right;\n  color: #ff0;\n}\n.dialog .dialog-body {\n  -webkit-box-flex: 1;\n      -ms-flex: 1 1 auto;\n          flex: 1 1 auto;\n  margin: 20px;\n}\n.modal-trans-enter,\n.modal-trans-leave-to {\n  opacity: 0;\n}\n.modal-trans-enter-active,\n.modal-trans-leave-active {\n  transition: opacity 0.3s;\n}\n.dialog-trans-enter,\n.dialog-trans-leave-to {\n  -webkit-transform: scale(0.1);\n          transform: scale(0.1);\n}\n.dialog-trans-enter-active,\n.dialog-trans-leave-active {\n  transition: -webkit-transform 0.3s;\n  transition: transform 0.3s;\n  transition: transform 0.3s, -webkit-transform 0.3s;\n}\n")
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -17,8 +17,10 @@ exports.default = {
             closed: false
         };
     },
+
     methods: {
         close: function close() {
+            alert('closing');
             this.closed = true;
         }
     }

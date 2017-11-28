@@ -185,6 +185,100 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+}
+
+function bytesToUuid(buf, offset) {
+  var i = offset || 0;
+  var bth = byteToHex;
+  return bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]];
+}
+
+module.exports = bytesToUuid;
+
+},{}],3:[function(require,module,exports){
+(function (global){
+// Unique ID creation requires a high quality random # generator.  In the
+// browser this is a little complicated due to unknown quality of Math.random()
+// and inconsistent support for the `crypto` API.  We do the best we can via
+// feature-detection
+var rng;
+
+var crypto = global.crypto || global.msCrypto; // for IE 11
+if (crypto && crypto.getRandomValues) {
+  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
+  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
+  rng = function whatwgRNG() {
+    crypto.getRandomValues(rnds8);
+    return rnds8;
+  };
+}
+
+if (!rng) {
+  // Math.random()-based (RNG)
+  //
+  // If all else fails, use Math.random().  It's fast, but is of unspecified
+  // quality.
+  var rnds = new Array(16);
+  rng = function() {
+    for (var i = 0, r; i < 16; i++) {
+      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+    }
+
+    return rnds;
+  };
+}
+
+module.exports = rng;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],4:[function(require,module,exports){
+var rng = require('./lib/rng');
+var bytesToUuid = require('./lib/bytesToUuid');
+
+function v4(options, buf, offset) {
+  var i = buf && offset || 0;
+
+  if (typeof(options) == 'string') {
+    buf = options == 'binary' ? new Array(16) : null;
+    options = null;
+  }
+  options = options || {};
+
+  var rnds = options.random || (options.rng || rng)();
+
+  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+  rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+  // Copy bytes to buffer, if provided
+  if (buf) {
+    for (var ii = 0; ii < 16; ++ii) {
+      buf[i + ii] = rnds[ii];
+    }
+  }
+
+  return buf || bytesToUuid(rnds);
+}
+
+module.exports = v4;
+
+},{"./lib/bytesToUuid":2,"./lib/rng":3}],5:[function(require,module,exports){
 var Vue // late bind
 var version
 var map = (window.__VUE_HOT_MAP__ = Object.create(null))
@@ -414,7 +508,7 @@ exports.reload = tryWrap(function (id, options) {
   })
 })
 
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v2.5.8
@@ -8252,7 +8346,7 @@ module.exports = Vue$3;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":1}],4:[function(require,module,exports){
+},{"_process":1}],7:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 function noop () {}
@@ -8277,7 +8371,7 @@ exports.insert = function (css) {
   }
 }
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var Vue = require('vue');
 var App = require('../views/app.vue');
 
@@ -8288,7 +8382,7 @@ window.onload = () => {
     });
 };
 
-},{"../views/app.vue":6,"vue":3}],6:[function(require,module,exports){
+},{"../views/app.vue":9,"vue":6}],9:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".app {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: flex-start;\n  margin: 0;\n}\n.header {\n  background: #fc0;\n  height: 33%;\n  width: 100%;\n  position: fixed;\n}\n.header h1 {\n  margin-left: 50px;\n  opacity: 1;\n  font-weight: 100;\n  font-family: 'Oswald';\n  font-size: 36px;\n}\n.chat {\n  display: flex;\n  margin-left: 10px;\n  flex-direction: column;\n  flex: 1 1 auto;\n  z-index: 2;\n  height: 100%;\n  border-radius: 2px;\n}\n.chat .room {\n  padding: 10px;\n  border: 1px solid #444;\n  margin-top: 100px;\n  background: #fff;\n  border: 1px solid #999;\n  box-shadow: 0 0 20px rgba(0,0,0,0.3);\n  flex: 1 1 auto;\n}\n.chat .entry {\n  flex: 0 1 auto;\n  margin-top: 10px;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  padding: 3px;\n}\n.chat .entry input {\n  width: 100%;\n  height: 100%;\n  border: 1px solid #999;\n  font-size: 24px;\n  padding: 10px;\n  border-radius: 5px;\n  box-sizing: border-box;\n}\n.chat .entry .fa-paper-plane {\n  margin-left: -30px;\n  color: #333;\n}\n.userlist {\n  margin: 100px 10px 0px 10px;\n  width: 200px;\n  padding: 5px;\n  background: #333;\n  flex: 0 1 auto;\n  z-index: 2;\n  transition: 0.25s all;\n  box-sizing: border-box;\n}\n.head-trans-enter-active,\n.head-trans-leave-active {\n  transition: margin 0.5s, opacity 0.5s;\n}\n.head-trans-enter,\n.head-trans-leave-top {\n  margin-left: 0;\n  opacity: 0;\n}")
 ;(function(){
 'use strict';
@@ -8306,6 +8400,7 @@ exports.default = {
     components: { message: message, user: user, modal: modal },
     data: function data() {
         return {
+            uid: null,
             loggedIn: false,
             ui: {
                 title: 'Tiger Talk'
@@ -8318,7 +8413,21 @@ exports.default = {
 
     methods: {
         getSession: function getSession() {
-            if (!document.cookie || document.cookie == null) {}
+            return document.cookie ? document.cookie : null;
+        }
+    },
+    mounted: function mounted() {
+        var userId = this.getSession();
+        if (userId != null) {
+            alert('cookie is ' + userId);
+            this.uid = userId;
+            alert('user cookie is present: ' + this.uid);
+        } else {
+            alert('creating uuid');
+            var uuid = require('uuid/v4')();
+            this.uid = uuid;
+            document.cookie = 'userId=' + uuid;
+            alert(uuid);
         }
     }
 };
@@ -8326,7 +8435,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[(!_vm.loggedIn)?_c('div',{staticClass:"login"},[_c('modal',{attrs:{"header":"Testing"}},[_vm._v("Hello World!")])],1):_vm._e(),_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}}),_c('i',{staticClass:"fa fa-user"})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})}))])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[(!_vm.loggedIn)?_c('div',{staticClass:"login"},[_c('modal',{attrs:{"header":"Testing"}},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.loginUserName),expression:"loginUserName"}],domProps:{"value":(_vm.loginUserName)},on:{"input":function($event){if($event.target.composing){ return; }_vm.loginUserName=$event.target.value}}})])],1):_vm._e(),_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}}),_c('i',{staticClass:"fa fa-user"})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})}))])}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -8340,7 +8449,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 
-},{"./message.vue":7,"./modal.vue":8,"./user.vue":9,"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}],7:[function(require,module,exports){
+},{"./message.vue":10,"./modal.vue":11,"./user.vue":12,"uuid/v4":4,"vue":6,"vue-hot-reload-api":5,"vueify/lib/insert-css":7}],10:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".message {\n  margin: 5px 0 5px 0;\n  display: flex;\n  width: 100%;\n  height: auto;\n  border-radius: 5px;\n  align-items: flex-start;\n  flex-direction: row;\n  box-sizing: border-box;\n  padding: 5px 30px 5px 5px;\n}\n.message:hover {\n  background: rgba(51,51,51,0.2);\n  transition: 0.25s all;\n}\n.message-profile {\n  flex: 0 1 auto;\n}\n.message-profile img {\n  width: 30px;\n  height: 30px;\n  border: 1px solid #888;\n  border-radius: 30px;\n}\n.message-profile .name {\n  display: inline-block;\n  margin: 0 10px 0 10px;\n  font-size: 12px;\n  font-weight: 100;\n  color: #666;\n}\n.message-content {\n  flex: 1 1 auto;\n  font-size: 10px;\n}")
 ;(function(){
 "use strict";
@@ -8378,10 +8487,10 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 
-},{"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}],8:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":5,"vueify/lib/insert-css":7}],11:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".modal {\n  z-index: 100;\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  opacity: 1;\n  background: rgba(0,0,0,0.5);\n  margin: 0 auto;\n  vertical-align: middle;\n  text-align: center;\n  align-content: center;\n}\n.dialog {\n  margin: 0 auto;\n  margin-top: 100px;\n  box-sizing: border-box;\n  background: #fff;\n  max-width: 75%;\n  border-radius: 20px;\n  box-shadow: 0 0 30px rgba(0,0,0,0.5);\n  position: relative;\n  transform: scale(1);\n  display: flex;\n  align-items: flex-start;\n  flex-direction: column;\n}\n.dialog .dialog-header {\n  box-sizing: border-box;\n  flex: 0 1 auto;\n  top: 0;\n  width: 100%;\n  padding: 5px;\n  text-align: center;\n  color: #fff;\n  background: #000;\n  font-weight: 100;\n  font-size: 16px;\n}\n.dialog .dialog-header .fa.fa-times-circle-o {\n  float: right;\n  color: #ff0;\n}\n.dialog .dialog-body {\n  flex: 1 1 auto;\n  margin: 20px;\n}\n.modal-trans-enter,\n.modal-trans-leave-to {\n  opacity: 0;\n}\n.modal-trans-enter-active,\n.modal-trans-leave-active {\n  transition: opacity 0.3s;\n}\n.dialog-trans-enter,\n.dialog-trans-leave-to {\n  transform: scale(0.1);\n}\n.dialog-trans-enter-active,\n.dialog-trans-leave-active {\n  transition: transform 0.3s;\n}")
 ;(function(){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -8398,10 +8507,11 @@ exports.default = {
             closed: false
         };
     },
+
     methods: {
         close: function close() {
+            alert('closing');
             this.closed = true;
-            this.$parent.clearDialog();
         }
     }
 };
@@ -8423,8 +8533,8 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 
-},{"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}],9:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 40px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 40px;\n  height: 40px;\n  border-radius: 30px;\n  background: #fff;\n  border: 1px solid #000;\n  padding: 2px;\n}\n.avatar-frame img {\n  width: 25px;\n  height: 25px;\n  vertical-align: middle;\n  border-radius: 40px;\n}\n.name {\n  font-size: 20px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}")
+},{"vue":6,"vue-hot-reload-api":5,"vueify/lib/insert-css":7}],12:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 40px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 40px;\n  border-radius: 30px;\n  background: #fff;\n  border: 1px solid #000;\n  padding: 2px;\n}\n.avatar-frame img {\n  width: 25px;\n  height: 25px;\n  vertical-align: middle;\n  border-radius: 40px;\n}\n.name {\n  font-size: 20px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}")
 ;(function(){
 "use strict";
 
@@ -8457,6 +8567,6 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 
-},{"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}]},{},[5])
+},{"vue":6,"vue-hot-reload-api":5,"vueify/lib/insert-css":7}]},{},[8])
 
 //# sourceMappingURL=index.js.map

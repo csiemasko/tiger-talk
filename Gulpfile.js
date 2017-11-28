@@ -12,18 +12,30 @@ var stylus = require('gulp-stylus')
 var pump = require('pump')
 
 var compileJS = () => {
+    console.log('Compiling scripts...');
+    try {
     var bundle = browserify('./src/js/index.js', { debug: true })
         .transform(babel)
         .transform(vueify);
-
-        pump([
+       
+       
+        return bundle.bundle().
+        pipe(vsource('index.js')).
+        pipe(vbuffer()).         
+        pipe(maps.init({ loadMaps: true })).
+        pipe(maps.write('./')).
+        pipe(gulp.dest('./public/js'));
+        /*pump([
             bundle.bundle(),
             vsource('index.js'),
             vbuffer(),         
             maps.init({ loadMaps: true }),
             maps.write('./'),
             gulp.dest('./public/js')
-        ]);   
+        ]);  */ 
+    } catch (e) {
+        console.log(e);
+    }
 }
 var compileVue = () => gulp.src('./src/views/*.vue').pipe(gvueify()).pipe(gulp.dest('./public/js'));
 var compileDOM = () => gulp.src('./src/views/*.pug').pipe(pug()).pipe(gulp.dest('./public/views'));
