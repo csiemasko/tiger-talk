@@ -1,5 +1,8 @@
 <template lang="pug">
 .app
+    .login(v-if="!loggedIn")
+        modal(header="Testing")
+            input(v-model="loginUserName")
     .header
         transition(name="head-trans")
             h1 {{ ui.title }}
@@ -8,17 +11,20 @@
             message(v-for="m in messages" :user="m.user" :message="m.message")
         .entry
             input(v-model="entryBox")
+            i.fa.fa-user
     .userlist
         user(v-for="u in users" :user="u")
 </template>
 <script>
 var message = require('./message.vue');
 var user    = require('./user.vue');
+var modal   = require('./modal.vue');
 var debugUser = { avatar: 'https://cdn.vox-cdn.com/uploads/chorus_asset/file/7515761/doc_glasses_2.jpg', name: 'Doc' };
 export default { 
-    components: { message, user }, 
+    components: { message, user, modal }, 
     data () {
         return {
+            loggedIn: false,
             ui: {
                 title: 'Tiger Talk'
             },
@@ -27,10 +33,30 @@ export default {
                 { user: debugUser, message: 'Hello World!' },
                 { user: debugUser, message: 'Hello World!' },
                 { user: debugUser, message: 'Hello World!' }
-            ],
+            ],           
             users: [
                 debugUser
             ]
+        }
+    },
+    methods: {
+        getSession() {
+            return document.cookie && document.cookie.userId ? document.cookie.userId : null;
+        }
+    },
+    ready() {
+        var userId = this.getSession();
+        if (userId != null) {
+             this.uid = userId;
+             alert('user cookie is present: ' + this.uid);
+        }
+        else {
+            alert('creating uuid');
+            var uuid = require('uuid/v4')();
+            this.uid = uuid;
+            document.cookie.userId = uuid;
+            alert(uuid);
+            
         }
     }
 }
@@ -86,14 +112,18 @@ $tu-yellow = #FFCC00
             padding: 10px
             border-radius: 5px
             box-sizing: border-box
+        .fa-paper-plane
+            margin-left: -30px
+            color: #333
 .userlist
-    margin-top: 100px
+    margin: 100px 10px 0px 10px
     width: 200px    
     padding: 5px
     background: #333
     flex: 0 1 auto
     z-index: 2
     transition: .25s all
+    box-sizing: border-box
 .head-trans-enter-active, .head-trans-leave-active
     transition: margin .5s, opacity .5s
 .head-trans-enter, .head-trans-leave-top

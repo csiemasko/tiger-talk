@@ -36,16 +36,17 @@ export default {
     .message-profile        
         flex: 0 1 auto
         img 
-            width: 50px
-            height: 50px
+            width: 30px
+            height: 30px
             border: 1px solid #888
-            border-radius: 50px
+            border-radius: 30px
         .name
             display: inline-block
             margin: 0 10px 0 10px
-            font-size: 16px
+            font-size: 12px
             font-weight: 100
             color: #666
     .message-content
-        flex: 1 1 auto        
+        flex: 1 1 auto
+        font-size: 10px        
 </style>

@@ -8289,7 +8289,7 @@ window.onload = () => {
 };
 
 },{"../views/app.vue":6,"vue":3}],6:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".app {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: flex-start;\n  margin: 0;\n}\n.header {\n  background: #fc0;\n  height: 33%;\n  width: 100%;\n  position: fixed;\n}\n.header h1 {\n  margin-left: 50px;\n  opacity: 1;\n  font-weight: 100;\n  font-family: 'Oswald';\n  font-size: 36px;\n}\n.chat {\n  display: flex;\n  margin-left: 10px;\n  flex-direction: column;\n  flex: 1 1 auto;\n  z-index: 2;\n  height: 100%;\n  border-radius: 2px;\n}\n.chat .room {\n  padding: 10px;\n  border: 1px solid #444;\n  margin-top: 100px;\n  background: #fff;\n  border: 1px solid #999;\n  box-shadow: 0 0 20px rgba(0,0,0,0.3);\n  flex: 1 1 auto;\n}\n.chat .entry {\n  flex: 0 1 auto;\n  margin-top: 10px;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  padding: 3px;\n}\n.chat .entry input {\n  width: 100%;\n  height: 100%;\n  border: 1px solid #999;\n  font-size: 24px;\n  padding: 10px;\n  border-radius: 5px;\n  box-sizing: border-box;\n}\n.userlist {\n  margin-top: 100px;\n  width: 200px;\n  padding: 5px;\n  background: #333;\n  flex: 0 1 auto;\n  z-index: 2;\n  transition: 0.25s all;\n}\n.head-trans-enter-active,\n.head-trans-leave-active {\n  transition: margin 0.5s, opacity 0.5s;\n}\n.head-trans-enter,\n.head-trans-leave-top {\n  margin-left: 0;\n  opacity: 0;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".app {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: flex-start;\n  margin: 0;\n}\n.header {\n  background: #fc0;\n  height: 33%;\n  width: 100%;\n  position: fixed;\n}\n.header h1 {\n  margin-left: 50px;\n  opacity: 1;\n  font-weight: 100;\n  font-family: 'Oswald';\n  font-size: 36px;\n}\n.chat {\n  display: flex;\n  margin-left: 10px;\n  flex-direction: column;\n  flex: 1 1 auto;\n  z-index: 2;\n  height: 100%;\n  border-radius: 2px;\n}\n.chat .room {\n  padding: 10px;\n  border: 1px solid #444;\n  margin-top: 100px;\n  background: #fff;\n  border: 1px solid #999;\n  box-shadow: 0 0 20px rgba(0,0,0,0.3);\n  flex: 1 1 auto;\n}\n.chat .entry {\n  flex: 0 1 auto;\n  margin-top: 10px;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  padding: 3px;\n}\n.chat .entry input {\n  width: 100%;\n  height: 100%;\n  border: 1px solid #999;\n  font-size: 24px;\n  padding: 10px;\n  border-radius: 5px;\n  box-sizing: border-box;\n}\n.chat .entry .fa-paper-plane {\n  margin-left: -30px;\n  color: #333;\n}\n.userlist {\n  margin: 100px 10px 0px 10px;\n  width: 200px;\n  padding: 5px;\n  background: #333;\n  flex: 0 1 auto;\n  z-index: 2;\n  transition: 0.25s all;\n  box-sizing: border-box;\n}\n.head-trans-enter-active,\n.head-trans-leave-active {\n  transition: margin 0.5s, opacity 0.5s;\n}\n.head-trans-enter,\n.head-trans-leave-top {\n  margin-left: 0;\n  opacity: 0;\n}")
 ;(function(){
 'use strict';
 
@@ -8300,11 +8300,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var message = require('./message.vue');
 var user = require('./user.vue');
+var modal = require('./modal.vue');
 var debugUser = { avatar: 'https://cdn.vox-cdn.com/uploads/chorus_asset/file/7515761/doc_glasses_2.jpg', name: 'Doc' };
 exports.default = {
-    components: { message: message, user: user },
+    components: { message: message, user: user, modal: modal },
     data: function data() {
         return {
+            loggedIn: false,
             ui: {
                 title: 'Tiger Talk'
             },
@@ -8312,13 +8314,19 @@ exports.default = {
             messages: [{ user: debugUser, message: 'Hello World!' }, { user: debugUser, message: 'Hello World!' }, { user: debugUser, message: 'Hello World!' }],
             users: [debugUser]
         };
+    },
+
+    methods: {
+        getSession: function getSession() {
+            if (!document.cookie || document.cookie == null) {}
+        }
     }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})}))])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[(!_vm.loggedIn)?_c('div',{staticClass:"login"},[_c('modal',{attrs:{"header":"Testing"}},[_vm._v("Hello World!")])],1):_vm._e(),_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}}),_c('i',{staticClass:"fa fa-user"})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})}))])}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -8326,14 +8334,14 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-5a77f744", __vue__options__)
+    hotAPI.createRecord("data-v-e46673c2", __vue__options__)
   } else {
-    hotAPI.reload("data-v-5a77f744", __vue__options__)
+    hotAPI.reload("data-v-e46673c2", __vue__options__)
   }
 })()}
 
-},{"./message.vue":7,"./user.vue":8,"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}],7:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".message {\n  margin: 5px 0 5px 0;\n  display: flex;\n  width: 100%;\n  height: auto;\n  border-radius: 5px;\n  align-items: flex-start;\n  flex-direction: row;\n  box-sizing: border-box;\n  padding: 5px 30px 5px 5px;\n}\n.message:hover {\n  background: rgba(51,51,51,0.2);\n  transition: 0.25s all;\n}\n.message-profile {\n  flex: 0 1 auto;\n}\n.message-profile img {\n  width: 50px;\n  height: 50px;\n  border: 1px solid #888;\n  border-radius: 50px;\n}\n.message-profile .name {\n  display: inline-block;\n  margin: 0 10px 0 10px;\n  font-size: 16px;\n  font-weight: 100;\n  color: #666;\n}\n.message-content {\n  flex: 1 1 auto;\n}")
+},{"./message.vue":7,"./modal.vue":8,"./user.vue":9,"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}],7:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".message {\n  margin: 5px 0 5px 0;\n  display: flex;\n  width: 100%;\n  height: auto;\n  border-radius: 5px;\n  align-items: flex-start;\n  flex-direction: row;\n  box-sizing: border-box;\n  padding: 5px 30px 5px 5px;\n}\n.message:hover {\n  background: rgba(51,51,51,0.2);\n  transition: 0.25s all;\n}\n.message-profile {\n  flex: 0 1 auto;\n}\n.message-profile img {\n  width: 30px;\n  height: 30px;\n  border: 1px solid #888;\n  border-radius: 30px;\n}\n.message-profile .name {\n  display: inline-block;\n  margin: 0 10px 0 10px;\n  font-size: 12px;\n  font-weight: 100;\n  color: #666;\n}\n.message-content {\n  flex: 1 1 auto;\n  font-size: 10px;\n}")
 ;(function(){
 "use strict";
 
@@ -8364,14 +8372,59 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-a67cc6ac", __vue__options__)
+    hotAPI.createRecord("data-v-790d8605", __vue__options__)
   } else {
-    hotAPI.reload("data-v-a67cc6ac", __vue__options__)
+    hotAPI.reload("data-v-790d8605", __vue__options__)
   }
 })()}
 
 },{"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}],8:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".user-frame {\n  width: 100%;\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 50px;\n  padding: 5px;\n}\n.avatar-frame {\n  width: 40px;\n  height: 40px;\n  border-radius: 30px;\n  background: #fff;\n  border: 1px solid #000;\n}\n.avatar-frame img {\n  width: 25px;\n  height: 25px;\n}\n.name {\n  font-size: 20px;\n  font-weight: 100;\n  color: #fff;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".modal {\n  z-index: 100;\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  opacity: 1;\n  background: rgba(0,0,0,0.5);\n  margin: 0 auto;\n  vertical-align: middle;\n  text-align: center;\n  align-content: center;\n}\n.dialog {\n  margin: 0 auto;\n  margin-top: 100px;\n  box-sizing: border-box;\n  background: #fff;\n  max-width: 75%;\n  border-radius: 20px;\n  box-shadow: 0 0 30px rgba(0,0,0,0.5);\n  position: relative;\n  transform: scale(1);\n  display: flex;\n  align-items: flex-start;\n  flex-direction: column;\n}\n.dialog .dialog-header {\n  box-sizing: border-box;\n  flex: 0 1 auto;\n  top: 0;\n  width: 100%;\n  padding: 5px;\n  text-align: center;\n  color: #fff;\n  background: #000;\n  font-weight: 100;\n  font-size: 16px;\n}\n.dialog .dialog-header .fa.fa-times-circle-o {\n  float: right;\n  color: #ff0;\n}\n.dialog .dialog-body {\n  flex: 1 1 auto;\n  margin: 20px;\n}\n.modal-trans-enter,\n.modal-trans-leave-to {\n  opacity: 0;\n}\n.modal-trans-enter-active,\n.modal-trans-leave-active {\n  transition: opacity 0.3s;\n}\n.dialog-trans-enter,\n.dialog-trans-leave-to {\n  transform: scale(0.1);\n}\n.dialog-trans-enter-active,\n.dialog-trans-leave-active {\n  transition: transform 0.3s;\n}")
+;(function(){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        header: {
+            type: String,
+            required: true
+        }
+    },
+    data: function data() {
+        return {
+            closed: false
+        };
+    },
+    methods: {
+        close: function close() {
+            this.closed = true;
+            this.$parent.clearDialog();
+        }
+    }
+};
+})()
+if (module.exports.__esModule) module.exports = module.exports.default
+var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('transition',{attrs:{"name":"modal-trans"}},[(!_vm.closed)?_c('div',{staticClass:"modal"},[_c('transition',{attrs:{"name":"dialog-trans"}},[_c('div',{staticClass:"dialog"},[_c('div',{staticClass:"dialog-header"},[_vm._v(_vm._s(_vm.header)),_c('div',{staticClass:"close-button"},[_c('i',{staticClass:"fa fa-times-circle-o",on:{"click":_vm.close}})])]),_c('div',{staticClass:"dialog-body"},[_vm._t("default")],2)])])],1):_vm._e()])}
+__vue__options__.staticRenderFns = []
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-96d181aa", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-96d181aa", __vue__options__)
+  }
+})()}
+
+},{"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}],9:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 40px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 40px;\n  height: 40px;\n  border-radius: 30px;\n  background: #fff;\n  border: 1px solid #000;\n  padding: 2px;\n}\n.avatar-frame img {\n  width: 25px;\n  height: 25px;\n  vertical-align: middle;\n  border-radius: 40px;\n}\n.name {\n  font-size: 20px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}")
 ;(function(){
 "use strict";
 
@@ -8398,9 +8451,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-bcad4190", __vue__options__)
+    hotAPI.createRecord("data-v-4e232886", __vue__options__)
   } else {
-    hotAPI.reload("data-v-bcad4190", __vue__options__)
+    hotAPI.reload("data-v-4e232886", __vue__options__)
   }
 })()}
 
