@@ -21,8 +21,9 @@ app.post('/connect', (req,res) => {
 
 });
 
-app.post('/create-user', (req,res) => {
+app.post('/create', (req,res) => {
     var data = req.body;
+    mongo.collection('users', (e,c) => c.insertOne({ userName: data.name, avatarUrl: data.avatar }));
     
 });
 

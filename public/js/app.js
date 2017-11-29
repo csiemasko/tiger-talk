@@ -16,6 +16,9 @@ exports.default = {
     data: function data() {
         return {
             uid: null,
+            session: {
+                userLogin: null
+            },
             loggedIn: false,
             ui: {
                 title: 'Tiger Talk'
@@ -29,6 +32,12 @@ exports.default = {
     methods: {
         getSession: function getSession() {
             return document.cookie ? document.cookie : null;
+        },
+        login: function login() {
+            var axios = require('axios');
+            axios.post('/create', { name: this.session.userLogin }).then(function (r) {
+                alert('return from server');
+            });
         }
     },
     mounted: function mounted() {
@@ -47,7 +56,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div class=\"app\"><div class=\"login\" v-if=\"!loggedIn\"><modal header=\"Testing\"><input v-model=\"loginUserName\"/></modal></div><div class=\"header\"><transition name=\"head-trans\"><h1>{{ ui.title }}</h1></transition></div><div class=\"chat\"><div class=\"room\"><message v-for=\"m in messages\" :user=\"m.user\" :message=\"m.message\"></message></div><div class=\"entry\"><input v-model=\"entryBox\"/><i class=\"fa fa-user\"></i></div></div><div class=\"userlist\"><user v-for=\"u in users\" :user=\"u\"></user></div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div class=\"app\"><div class=\"login\" v-if=\"!loggedIn\"><modal header=\"Testing\"><input v-model=\"session.userLogin\"/><input type=\"button\" @click=\"login\"/></modal></div><div class=\"header\"><transition name=\"head-trans\"><h1>{{ ui.title }}</h1></transition></div><div class=\"chat\"><div class=\"room\"><message v-for=\"m in messages\" :user=\"m.user\" :message=\"m.message\"></message></div><div class=\"entry\"><input v-model=\"entryBox\"/><i class=\"fa fa-user\"></i></div></div><div class=\"userlist\"><user v-for=\"u in users\" :user=\"u\"></user></div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -57,8 +66,8 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-e46673c2", module.exports)
+    hotAPI.createRecord("_v-d1a8576a", module.exports)
   } else {
-    hotAPI.update("_v-e46673c2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-d1a8576a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}

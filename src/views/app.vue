@@ -2,7 +2,8 @@
 .app
     .login(v-if="!loggedIn")
         modal(header="Testing")
-            input(v-model="loginUserName")
+            input(v-model="session.userLogin")
+            input(type="button" @click="login")
     .header
         transition(name="head-trans")
             h1 {{ ui.title }}
@@ -25,6 +26,9 @@ export default {
     data () {
         return {
             uid: null,
+            session: {
+                userLogin: null
+            },
             loggedIn: false,
             ui: {
                 title: 'Tiger Talk'
@@ -43,6 +47,12 @@ export default {
     methods: {
         getSession() {
             return document.cookie ? document.cookie : null;
+        },
+        login() {
+            var axios = require('axios');
+            axios.post('/create', { name: this.session.userLogin }).then(r => {
+                alert('return from server');
+            });
         }
     },
     mounted() {
