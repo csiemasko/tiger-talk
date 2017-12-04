@@ -2,8 +2,11 @@ var Vue = require('vue')
 var App = require('../views/app.vue')
 
 window.onload = () => {
-    var _v = new Vue({
+    window._v = new Vue({
         el: '#root',
-        render: (element) => element(App)
-    });
+        render: (element) => element(App),
+        mounted () {
+          
+        }
+    });   
 }

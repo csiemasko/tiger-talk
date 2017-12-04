@@ -9821,9 +9821,10 @@ var Vue = require('vue');
 var App = require('../views/app.vue');
 
 window.onload = () => {
-    var _v = new Vue({
+    window._v = new Vue({
         el: '#root',
-        render: element => element(App)
+        render: element => element(App),
+        mounted() {}
     });
 };
 
@@ -9868,28 +9869,38 @@ exports.default = {
             axios.post('/create', { name: this.session.userLogin }).then(function (r) {
                 alert('return from server');
             });
+        },
+        googleSignIn: function googleSignIn(gUser) {
+            var profile = gUser.getBasicProfile();
+            alert('ID: ' + profile.getId() + ' -- Name: ' + profile.getName());
+        },
+        postMessage: function postMessage() {
+            console.log('posting to server');
+            window.socket.emit('message', { text: this.entryBox, userId: this.uid });
         }
     },
     mounted: function mounted() {
+        var _this = this;
+
         var userId = this.getSession();
         if (userId != null) {
-            alert('cookie is ' + userId);
-            this.uid = userId;
-            alert('user cookie is present: ' + this.uid);
+            this.uid = userId.split('=')[1];
         } else {
-            alert('creating uuid');
             var uuid = require('uuid/v4')();
             this.uid = uuid;
             document.cookie = 'userId=' + uuid;
-            alert(uuid);
         }
+        window.socket = io('http://localhost:7331', { query: 'uid=' + this.uid });
+        window.socket.on('<<msg', function (m) {
+            _this.messages.push({ user: m.user, message: m.text });
+        });
     }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[(!_vm.loggedIn)?_c('div',{staticClass:"login"},[_c('modal',{attrs:{"header":"Testing"}},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.session.userLogin),expression:"session.userLogin"}],domProps:{"value":(_vm.session.userLogin)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.session, "userLogin", $event.target.value)}}}),_c('input',{attrs:{"type":"button"},on:{"click":_vm.login}})])],1):_vm._e(),_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}}),_c('i',{staticClass:"fa fa-user"})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})}))])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[(!_vm.loggedIn)?_c('div',{staticClass:"login"},[_c('modal',{attrs:{"header":"Testing"}},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.session.userLogin),expression:"session.userLogin"}],domProps:{"value":(_vm.session.userLogin)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.session, "userLogin", $event.target.value)}}}),_c('input',{attrs:{"type":"button"},on:{"click":_vm.login}}),_c('div',{staticClass:"g-signin2",attrs:{"data-onsuccess":_vm.googleSignIn}})])],1):_vm._e(),_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"keyup":function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13,$event.key)){ return null; }_vm.postMessage($event)},"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}}),_c('i',{staticClass:"fa fa-user"})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})}))])}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -9897,9 +9908,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-d1a8576a", __vue__options__)
+    hotAPI.createRecord("data-v-18d73ee2", __vue__options__)
   } else {
-    hotAPI.reload("data-v-d1a8576a", __vue__options__)
+    hotAPI.reload("data-v-18d73ee2", __vue__options__)
   }
 })()}
 
@@ -9935,9 +9946,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-fabcc39e", __vue__options__)
+    hotAPI.createRecord("data-v-23a26875", __vue__options__)
   } else {
-    hotAPI.reload("data-v-fabcc39e", __vue__options__)
+    hotAPI.reload("data-v-23a26875", __vue__options__)
   }
 })()}
 
@@ -9981,9 +9992,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3b291b52", __vue__options__)
+    hotAPI.createRecord("data-v-723c04ca", __vue__options__)
   } else {
-    hotAPI.reload("data-v-3b291b52", __vue__options__)
+    hotAPI.reload("data-v-723c04ca", __vue__options__)
   }
 })()}
 
@@ -10015,9 +10026,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-091db9de", __vue__options__)
+    hotAPI.createRecord("data-v-2c1a1f4d", __vue__options__)
   } else {
-    hotAPI.reload("data-v-091db9de", __vue__options__)
+    hotAPI.reload("data-v-2c1a1f4d", __vue__options__)
   }
 })()}
 

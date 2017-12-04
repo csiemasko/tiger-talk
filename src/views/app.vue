@@ -4,6 +4,7 @@
         modal(header="Testing")
             input(v-model="session.userLogin")
             input(type="button" @click="login")
+            .g-signin2(:data-onsuccess='googleSignIn')
     .header
         transition(name="head-trans")
             h1 {{ ui.title }}
@@ -11,10 +12,10 @@
         .room
             message(v-for="m in messages" :user="m.user" :message="m.message")
         .entry
-            input(v-model="entryBox")
+            input(v-model="entryBox" @keyup.enter="postMessage")
             i.fa.fa-user
     .userlist
-        user(v-for="u in users" :user="u")
+        user(v-for="u in users" :user="u")    
 </template>
 <script>
 var message = require('./message.vue');
@@ -53,23 +54,31 @@ export default {
             axios.post('/create', { name: this.session.userLogin }).then(r => {
                 alert('return from server');
             });
+        },
+        googleSignIn(gUser) {
+            var profile = gUser.getBasicProfile();
+            alert(`ID: ${profile.getId()} -- Name: ${profile.getName()}`);
+        },
+        postMessage() {
+            console.log('posting to server');
+            window.socket.emit('message', { text: this.entryBox, userId: this.uid });
         }
     },
     mounted() {
         var userId = this.getSession();
-        if (userId != null) {
-            alert('cookie is ' + userId);
-             this.uid = userId;
-             alert('user cookie is present: ' + this.uid);
+        if (userId != null) {            
+             this.uid = userId.split('=')[1];
+
         }
-        else {
-            alert('creating uuid');
+        else {            
             var uuid = require('uuid/v4')();
             this.uid = uuid;
             document.cookie = `userId=${uuid}`;
-            alert(uuid);
-            
-        }
+        }        
+        window.socket = io('http://localhost:7331', { query: `uid=${this.uid}` });
+        window.socket.on('<<msg', m => {
+            this.messages.push({user: m.user, message: m.text });
+        });
     }
 }
 </script>

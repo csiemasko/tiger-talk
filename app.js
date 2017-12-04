@@ -41,4 +41,16 @@ function initMongo () {
 };
 
 initMongo();
+var io = require('socket.io').listen(server);
+io.sockets.on('connection', socket => {
+    console.log('A user connected: ' + socket.handshake.query.uid );
+    socket.on('message', m => {
+        console.log('message received');
+        console.log(m.text);
+        socket.emit('<<msg', {user: 'debug', text: m.text});
+    });
+});
+
+
+server.listen(7331);
 app.listen(1337);

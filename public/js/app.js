@@ -38,25 +38,35 @@ exports.default = {
             axios.post('/create', { name: this.session.userLogin }).then(function (r) {
                 alert('return from server');
             });
+        },
+        googleSignIn: function googleSignIn(gUser) {
+            var profile = gUser.getBasicProfile();
+            alert('ID: ' + profile.getId() + ' -- Name: ' + profile.getName());
+        },
+        postMessage: function postMessage() {
+            console.log('posting to server');
+            window.socket.emit('message', { text: this.entryBox, userId: this.uid });
         }
     },
     mounted: function mounted() {
+        var _this = this;
+
         var userId = this.getSession();
         if (userId != null) {
-            alert('cookie is ' + userId);
-            this.uid = userId;
-            alert('user cookie is present: ' + this.uid);
+            this.uid = userId.split('=')[1];
         } else {
-            alert('creating uuid');
             var uuid = require('uuid/v4')();
             this.uid = uuid;
             document.cookie = 'userId=' + uuid;
-            alert(uuid);
         }
+        window.socket = io('http://localhost:7331', { query: 'uid=' + this.uid });
+        window.socket.on('<<msg', function (m) {
+            _this.messages.push({ user: m.user, message: m.text });
+        });
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div class=\"app\"><div class=\"login\" v-if=\"!loggedIn\"><modal header=\"Testing\"><input v-model=\"session.userLogin\"/><input type=\"button\" @click=\"login\"/></modal></div><div class=\"header\"><transition name=\"head-trans\"><h1>{{ ui.title }}</h1></transition></div><div class=\"chat\"><div class=\"room\"><message v-for=\"m in messages\" :user=\"m.user\" :message=\"m.message\"></message></div><div class=\"entry\"><input v-model=\"entryBox\"/><i class=\"fa fa-user\"></i></div></div><div class=\"userlist\"><user v-for=\"u in users\" :user=\"u\"></user></div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div class=\"app\"><div class=\"login\" v-if=\"!loggedIn\"><modal header=\"Testing\"><input v-model=\"session.userLogin\"/><input type=\"button\" @click=\"login\"/><div class=\"g-signin2\" :data-onsuccess=\"googleSignIn\"></div></modal></div><div class=\"header\"><transition name=\"head-trans\"><h1>{{ ui.title }}</h1></transition></div><div class=\"chat\"><div class=\"room\"><message v-for=\"m in messages\" :user=\"m.user\" :message=\"m.message\"></message></div><div class=\"entry\"><input v-model=\"entryBox\" @keyup.enter=\"postMessage\"/><i class=\"fa fa-user\"></i></div></div><div class=\"userlist\"><user v-for=\"u in users\" :user=\"u\">   </user></div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -66,8 +76,8 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-d1a8576a", module.exports)
+    hotAPI.createRecord("_v-18d73ee2", module.exports)
   } else {
-    hotAPI.update("_v-d1a8576a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-18d73ee2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}

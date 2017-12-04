@@ -28,8 +28,8 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-fabcc39e", module.exports)
+    hotAPI.createRecord("_v-23a26875", module.exports)
   } else {
-    hotAPI.update("_v-fabcc39e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-23a26875", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
