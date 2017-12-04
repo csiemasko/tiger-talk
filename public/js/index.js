@@ -1630,100 +1630,6 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],28:[function(require,module,exports){
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */
-var byteToHex = [];
-for (var i = 0; i < 256; ++i) {
-  byteToHex[i] = (i + 0x100).toString(16).substr(1);
-}
-
-function bytesToUuid(buf, offset) {
-  var i = offset || 0;
-  var bth = byteToHex;
-  return bth[buf[i++]] + bth[buf[i++]] +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] +
-          bth[buf[i++]] + bth[buf[i++]] +
-          bth[buf[i++]] + bth[buf[i++]];
-}
-
-module.exports = bytesToUuid;
-
-},{}],29:[function(require,module,exports){
-(function (global){
-// Unique ID creation requires a high quality random # generator.  In the
-// browser this is a little complicated due to unknown quality of Math.random()
-// and inconsistent support for the `crypto` API.  We do the best we can via
-// feature-detection
-var rng;
-
-var crypto = global.crypto || global.msCrypto; // for IE 11
-if (crypto && crypto.getRandomValues) {
-  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
-  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
-  rng = function whatwgRNG() {
-    crypto.getRandomValues(rnds8);
-    return rnds8;
-  };
-}
-
-if (!rng) {
-  // Math.random()-based (RNG)
-  //
-  // If all else fails, use Math.random().  It's fast, but is of unspecified
-  // quality.
-  var rnds = new Array(16);
-  rng = function() {
-    for (var i = 0, r; i < 16; i++) {
-      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
-      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
-    }
-
-    return rnds;
-  };
-}
-
-module.exports = rng;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],30:[function(require,module,exports){
-var rng = require('./lib/rng');
-var bytesToUuid = require('./lib/bytesToUuid');
-
-function v4(options, buf, offset) {
-  var i = buf && offset || 0;
-
-  if (typeof(options) == 'string') {
-    buf = options == 'binary' ? new Array(16) : null;
-    options = null;
-  }
-  options = options || {};
-
-  var rnds = options.random || (options.rng || rng)();
-
-  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-  rnds[6] = (rnds[6] & 0x0f) | 0x40;
-  rnds[8] = (rnds[8] & 0x3f) | 0x80;
-
-  // Copy bytes to buffer, if provided
-  if (buf) {
-    for (var ii = 0; ii < 16; ++ii) {
-      buf[i + ii] = rnds[ii];
-    }
-  }
-
-  return buf || bytesToUuid(rnds);
-}
-
-module.exports = v4;
-
-},{"./lib/bytesToUuid":28,"./lib/rng":29}],31:[function(require,module,exports){
 var Vue // late bind
 var version
 var map = (window.__VUE_HOT_MAP__ = Object.create(null))
@@ -1953,7 +1859,7 @@ exports.reload = tryWrap(function (id, options) {
   })
 })
 
-},{}],32:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v2.5.8
@@ -9791,7 +9697,7 @@ module.exports = Vue$3;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":27}],33:[function(require,module,exports){
+},{"_process":27}],30:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 function noop () {}
@@ -9816,7 +9722,7 @@ exports.insert = function (css) {
   }
 }
 
-},{}],34:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var Vue = require('vue');
 var App = require('../views/app.vue');
 
@@ -9828,8 +9734,8 @@ window.onload = () => {
     });
 };
 
-},{"../views/app.vue":35,"vue":32}],35:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".app {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: flex-start;\n  margin: 0;\n}\n.header {\n  background: #fc0;\n  height: 33%;\n  width: 100%;\n  position: fixed;\n}\n.header h1 {\n  margin-left: 50px;\n  opacity: 1;\n  font-weight: 100;\n  font-family: 'Oswald';\n  font-size: 36px;\n}\n.chat {\n  display: flex;\n  margin-left: 10px;\n  flex-direction: column;\n  flex: 1 1 auto;\n  z-index: 2;\n  height: 100%;\n  border-radius: 2px;\n}\n.chat .room {\n  padding: 10px;\n  border: 1px solid #444;\n  margin-top: 100px;\n  background: #fff;\n  border: 1px solid #999;\n  box-shadow: 0 0 20px rgba(0,0,0,0.3);\n  flex: 1 1 auto;\n}\n.chat .entry {\n  flex: 0 1 auto;\n  margin-top: 10px;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  padding: 3px;\n}\n.chat .entry input {\n  width: 100%;\n  height: 100%;\n  border: 1px solid #999;\n  font-size: 24px;\n  padding: 10px;\n  border-radius: 5px;\n  box-sizing: border-box;\n}\n.chat .entry .fa-paper-plane {\n  margin-left: -30px;\n  color: #333;\n}\n.userlist {\n  margin: 100px 10px 0px 10px;\n  width: 200px;\n  padding: 5px;\n  background: #333;\n  flex: 0 1 auto;\n  z-index: 2;\n  transition: 0.25s all;\n  box-sizing: border-box;\n}\n.head-trans-enter-active,\n.head-trans-leave-active {\n  transition: margin 0.5s, opacity 0.5s;\n}\n.head-trans-enter,\n.head-trans-leave-top {\n  margin-left: 0;\n  opacity: 0;\n}")
+},{"../views/app.vue":32,"vue":29}],32:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".app {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: flex-start;\n  margin: 0;\n}\n.header {\n  background: #fc0;\n  height: 33%;\n  width: 100%;\n  position: fixed;\n}\n.header h1 {\n  margin-left: 50px;\n  opacity: 1;\n  font-weight: 100;\n  font-family: 'Oswald';\n  font-size: 36px;\n}\n.modal-label {\n  display: inline-block;\n  font-size: 9px;\n  margin-right: 10px;\n  vertical-align: middle;\n}\n.chat {\n  display: flex;\n  margin-left: 10px;\n  flex-direction: column;\n  flex: 1 1 auto;\n  z-index: 2;\n  height: 100%;\n  border-radius: 2px;\n}\n.chat .room {\n  padding: 10px;\n  border: 1px solid #444;\n  margin-top: 100px;\n  background: #fff;\n  border: 1px solid #999;\n  box-shadow: 0 0 20px rgba(0,0,0,0.3);\n  flex: 1 1 auto;\n}\n.chat .entry {\n  flex: 0 1 auto;\n  margin-top: 10px;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  padding: 3px;\n}\n.chat .entry input {\n  width: 100%;\n  height: 100%;\n  border: 1px solid #999;\n  font-size: 24px;\n  padding: 10px;\n  border-radius: 5px;\n  box-sizing: border-box;\n}\n.chat .entry .fa-paper-plane {\n  margin-left: -30px;\n  color: #333;\n}\n.userlist {\n  margin: 100px 10px 0px 10px;\n  width: 200px;\n  padding: 5px;\n  background: #333;\n  flex: 0 1 auto;\n  z-index: 2;\n  transition: 0.25s all;\n  box-sizing: border-box;\n}\n.head-trans-enter-active,\n.head-trans-leave-active {\n  transition: margin 0.5s, opacity 0.5s;\n}\n.head-trans-enter,\n.head-trans-leave-top {\n  margin-left: 0;\n  opacity: 0;\n}\n#toast {\n  display: none;\n  animation: toast-show 1s ease-in-out;\n  padding: 10px 30px 10px 30px;\n  background: #fc0;\n  color: #000;\n  position: absolute;\n  bottom: 0;\n  text-align: center;\n  height: 30px;\n  transition: 1s all;\n}\n@-moz-keyframes toast-show {\n  from {\n    opacity: 0;\n    margin-top: 30px;\n  }\n  to {\n    opacity: 1;\n    margin-top: 0;\n  }\n}\n@-webkit-keyframes toast-show {\n  from {\n    opacity: 0;\n    margin-top: 30px;\n  }\n  to {\n    opacity: 1;\n    margin-top: 0;\n  }\n}\n@-o-keyframes toast-show {\n  from {\n    opacity: 0;\n    margin-top: 30px;\n  }\n  to {\n    opacity: 1;\n    margin-top: 0;\n  }\n}\n@keyframes toast-show {\n  from {\n    opacity: 0;\n    margin-top: 30px;\n  }\n  to {\n    opacity: 1;\n    margin-top: 0;\n  }\n}")
 ;(function(){
 'use strict';
 
@@ -9848,14 +9754,21 @@ exports.default = {
         return {
             uid: null,
             session: {
-                userLogin: null
+                currentUser: {},
+                userLogin: null,
+                userPass: null,
+                userPassVerify: null,
+                loggedIn: false,
+                userAvatar: ''
             },
-            loggedIn: false,
             ui: {
-                title: 'Tiger Talk'
+                newUser: false,
+                title: 'Tiger Talk',
+                toastMessage: '',
+                toastVisible: false
             },
             entryBox: '',
-            messages: [{ user: debugUser, message: 'Hello World!' }, { user: debugUser, message: 'Hello World!' }, { user: debugUser, message: 'Hello World!' }],
+            messages: [],
             users: [debugUser]
         };
     },
@@ -9864,10 +9777,77 @@ exports.default = {
         getSession: function getSession() {
             return document.cookie ? document.cookie : null;
         },
+        toast: function toast(message) {
+            var _this = this;
+
+            this.ui.toastMessage = message;
+            this.ui.toastVisible = true;
+            setTimeout(function () {
+                _this.ui.toastVisible = false;
+            }, 5000);
+        },
         login: function login() {
-            var axios = require('axios');
-            axios.post('/create', { name: this.session.userLogin }).then(function (r) {
-                alert('return from server');
+            var _this2 = this;
+
+            if (this.ui.newUser) {
+                this.createUser();
+                return;
+            } else {
+                var axios = require('axios');
+                axios.post('/login', { name: this.session.userLogin, pass: this.session.userPass }).then(function (r) {
+                    console.log(r);
+                    if (r != null) {
+                        if (r.data.result == 'success') {
+                            _this2.session.loggedIn = true;
+                            _this2.session.currentUser = r.data.user;
+                            _this2.connect(r.data.user);
+                        } else if (r.result == 'fail') {
+                            _this2.toast(r.data.message);
+                        }
+                    }
+                });
+            }
+        },
+        createUser: function createUser() {
+            var _this3 = this;
+
+            if (this.session.userPass != this.session.userPassVerify) {
+                this.toast('Passwords do not match!');
+                this.session.userPass = '';
+                this.session.userPassVerify = '';
+            } else {
+                var axios = require('axios');
+                axios.post('/create', { name: this.session.userLogin, pass: this.session.userPass }).then(function (r) {
+                    console.log(r);
+                    if (r.data != null) {
+                        if (r.data.result == 'success') {
+                            _this3.session.loggedIn = true;
+                            _this3.session.currentUser = r.data.user;
+                            _this3.connect(_this3.session.currentUser);
+                        } else if (r.data.result == 'fail') {
+                            _this3.toast(r.data.message);
+                        }
+                    } else {
+                        console.log('User creation failed');
+                        _this3.toast('User creation failed');
+                    }
+                });
+            }
+        },
+        connect: function connect(validUser) {
+            var _this4 = this;
+
+            window.socket = io('http://localhost:7331', { query: 'uid=' + validUser._id });
+            window.socket.on('<<msg', function (m) {
+                _this4.messages.push({ user: m.user, message: m.text, timestamp: m.timestamp });
+            });
+            window.socket.on('+users', function (u) {
+                _this4.messages.push({ type: 'system', message: u.name + ' has connected' });
+                _this4.users = u.list;
+            });
+            window.socket.on('-users', function (u) {
+                _this4.messages.push({ type: 'system', message: u.name + ' has left' });
+                _this4.users = u.list;
             });
         },
         googleSignIn: function googleSignIn(gUser) {
@@ -9875,32 +9855,17 @@ exports.default = {
             alert('ID: ' + profile.getId() + ' -- Name: ' + profile.getName());
         },
         postMessage: function postMessage() {
-            console.log('posting to server');
-            window.socket.emit('message', { text: this.entryBox, userId: this.uid });
-        }
+            window.socket.emit('message', { text: this.entryBox, userId: this.session.currentUser.uid });
+        },
+        authenticate: function authenticate() {}
     },
-    mounted: function mounted() {
-        var _this = this;
-
-        var userId = this.getSession();
-        if (userId != null) {
-            this.uid = userId.split('=')[1];
-        } else {
-            var uuid = require('uuid/v4')();
-            this.uid = uuid;
-            document.cookie = 'userId=' + uuid;
-        }
-        window.socket = io('http://localhost:7331', { query: 'uid=' + this.uid });
-        window.socket.on('<<msg', function (m) {
-            _this.messages.push({ user: m.user, message: m.text });
-        });
-    }
+    mounted: function mounted() {}
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[(!_vm.loggedIn)?_c('div',{staticClass:"login"},[_c('modal',{attrs:{"header":"Testing"}},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.session.userLogin),expression:"session.userLogin"}],domProps:{"value":(_vm.session.userLogin)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.session, "userLogin", $event.target.value)}}}),_c('input',{attrs:{"type":"button"},on:{"click":_vm.login}}),_c('div',{staticClass:"g-signin2",attrs:{"data-onsuccess":_vm.googleSignIn}})])],1):_vm._e(),_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"keyup":function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13,$event.key)){ return null; }_vm.postMessage($event)},"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}}),_c('i',{staticClass:"fa fa-user"})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})}))])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"app"},[(!_vm.session.loggedIn)?_c('div',{staticClass:"login"},[_c('modal',{attrs:{"header":"Log In to Tiger Talk"}},[_c('div',{staticClass:"modal-label"},[_vm._v("User Name")]),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.session.userLogin),expression:"session.userLogin"}],attrs:{"placeholder":"Username"},domProps:{"value":(_vm.session.userLogin)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.session, "userLogin", $event.target.value)}}}),_c('div',{staticClass:"modal-label"},[_vm._v("Password          ")]),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.session.userPass),expression:"session.userPass"}],attrs:{"type":"password","placeholder":"Password"},domProps:{"value":(_vm.session.userPass)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.session, "userPass", $event.target.value)}}}),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.ui.newUser),expression:"ui.newUser"}],staticClass:"modal-label"},[_vm._v("Verify Password          ")]),_c('input',{directives:[{name:"show",rawName:"v-show",value:(_vm.ui.newUser),expression:"ui.newUser"},{name:"model",rawName:"v-model",value:(_vm.session.userPassVerify),expression:"session.userPassVerify"}],attrs:{"type":"password","placeholder":"Verify Password"},domProps:{"value":(_vm.session.userPassVerify)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.session, "userPassVerify", $event.target.value)}}}),_c('input',{attrs:{"type":"button","value":_vm.ui.newUser ? 'Create & Sign In' : 'Sign In'},on:{"click":_vm.login}}),_c('div',{staticClass:"g-signin2",attrs:{"data-onsuccess":"googleSignIn"}}),_c('input',{directives:[{name:"show",rawName:"v-show",value:(!_vm.ui.newUser),expression:"!ui.newUser"}],attrs:{"type":"button","value":"Create Account"},on:{"click":function($event){_vm.ui.newUser = true}}})])],1):_vm._e(),_c('div',{staticClass:"header"},[_c('transition',{attrs:{"name":"head-trans"}},[_c('h1',[_vm._v(_vm._s(_vm.ui.title))])])],1),_c('div',{staticClass:"chat"},[_c('div',{staticClass:"room"},_vm._l((_vm.messages),function(m){return _c('message',{attrs:{"user":m.user,"message":m.message}})})),_c('div',{staticClass:"entry"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.entryBox),expression:"entryBox"}],domProps:{"value":(_vm.entryBox)},on:{"keyup":function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13,$event.key)){ return null; }_vm.postMessage($event)},"input":function($event){if($event.target.composing){ return; }_vm.entryBox=$event.target.value}}}),_c('i',{staticClass:"fa fa-user"})])]),_c('div',{staticClass:"userlist"},_vm._l((_vm.users),function(u){return _c('user',{attrs:{"user":u}})})),(_vm.ui.toastVisible)?_c('div',{attrs:{"id":"toast"}},[_vm._v(_vm._s(_vm.ui.toastMessage))]):_vm._e()])}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -9908,14 +9873,14 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-18d73ee2", __vue__options__)
+    hotAPI.createRecord("data-v-871da3d8", __vue__options__)
   } else {
-    hotAPI.reload("data-v-18d73ee2", __vue__options__)
+    hotAPI.reload("data-v-871da3d8", __vue__options__)
   }
 })()}
 
-},{"./message.vue":36,"./modal.vue":37,"./user.vue":38,"axios":1,"uuid/v4":30,"vue":32,"vue-hot-reload-api":31,"vueify/lib/insert-css":33}],36:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".message {\n  margin: 5px 0 5px 0;\n  display: flex;\n  width: 100%;\n  height: auto;\n  border-radius: 5px;\n  align-items: flex-start;\n  flex-direction: row;\n  box-sizing: border-box;\n  padding: 5px 30px 5px 5px;\n}\n.message:hover {\n  background: rgba(51,51,51,0.2);\n  transition: 0.25s all;\n}\n.message-profile {\n  flex: 0 1 auto;\n}\n.message-profile img {\n  width: 30px;\n  height: 30px;\n  border: 1px solid #888;\n  border-radius: 30px;\n}\n.message-profile .name {\n  display: inline-block;\n  margin: 0 10px 0 10px;\n  font-size: 12px;\n  font-weight: 100;\n  color: #666;\n}\n.message-content {\n  flex: 1 1 auto;\n  font-size: 10px;\n}")
+},{"./message.vue":33,"./modal.vue":34,"./user.vue":35,"axios":1,"vue":29,"vue-hot-reload-api":28,"vueify/lib/insert-css":30}],33:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".message {\n  margin: 5px 0 5px 0;\n  display: flex;\n  width: 100%;\n  height: auto;\n  border-radius: 5px;\n  align-items: flex-start;\n  flex-direction: row;\n  box-sizing: border-box;\n  padding: 5px 30px 5px 5px;\n}\n.message:hover {\n  background: rgba(51,51,51,0.2);\n  transition: 0.25s all;\n}\n.message-profile {\n  flex: 0 1 auto;\n}\n.message-profile img {\n  width: 30px;\n  height: 30px;\n  border: 1px solid #888;\n  border-radius: 30px;\n}\n.message-profile .name {\n  display: inline-block;\n  margin: 0 10px 0 10px;\n  font-size: 12px;\n  font-weight: 100;\n  color: #666;\n}\n.message-content {\n  flex: 1 1 auto;\n  font-size: 10px;\n}\n.system_message {\n  color: #f00;\n}")
 ;(function(){
 "use strict";
 
@@ -9938,7 +9903,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"message"},[_c('div',{staticClass:"message-profile"},[_c('img',{attrs:{"src":_vm.user.avatar,"alt":"user.name"}}),_c('div',{staticClass:"name"},[_vm._v(_vm._s(_vm.user.name))])]),_c('div',{staticClass:"message-content"},[_vm._v(_vm._s(_vm.message))])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"message"},[(_vm.m.type != 'system')?_c('div',{staticClass:"message-profile"},[_c('img',{attrs:{"src":_vm.user.avatar,"alt":"user.name"}}),_c('div',{staticClass:"name"},[_vm._v(_vm._s(_vm.user.name))])]):_vm._e(),_c('div',{staticClass:"message-content",class:{system_message: _vm.m.type == 'system'}},[_vm._v(_vm._s(_vm.message))])])}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -9946,16 +9911,16 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-23a26875", __vue__options__)
+    hotAPI.createRecord("data-v-6ea2eb7a", __vue__options__)
   } else {
-    hotAPI.reload("data-v-23a26875", __vue__options__)
+    hotAPI.reload("data-v-6ea2eb7a", __vue__options__)
   }
 })()}
 
-},{"vue":32,"vue-hot-reload-api":31,"vueify/lib/insert-css":33}],37:[function(require,module,exports){
+},{"vue":29,"vue-hot-reload-api":28,"vueify/lib/insert-css":30}],34:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".modal {\n  z-index: 100;\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  opacity: 1;\n  background: rgba(0,0,0,0.5);\n  margin: 0 auto;\n  vertical-align: middle;\n  text-align: center;\n  align-content: center;\n}\n.dialog {\n  margin: 0 auto;\n  margin-top: 100px;\n  box-sizing: border-box;\n  background: #fff;\n  max-width: 75%;\n  border-radius: 20px;\n  box-shadow: 0 0 30px rgba(0,0,0,0.5);\n  position: relative;\n  transform: scale(1);\n  display: flex;\n  align-items: flex-start;\n  flex-direction: column;\n}\n.dialog .dialog-header {\n  box-sizing: border-box;\n  flex: 0 1 auto;\n  top: 0;\n  width: 100%;\n  padding: 5px;\n  text-align: center;\n  color: #fff;\n  background: #000;\n  font-weight: 100;\n  font-size: 16px;\n}\n.dialog .dialog-header .fa.fa-times-circle-o {\n  float: right;\n  color: #ff0;\n}\n.dialog .dialog-body {\n  flex: 1 1 auto;\n  margin: 20px;\n}\n.modal-trans-enter,\n.modal-trans-leave-to {\n  opacity: 0;\n}\n.modal-trans-enter-active,\n.modal-trans-leave-active {\n  transition: opacity 0.3s;\n}\n.dialog-trans-enter,\n.dialog-trans-leave-to {\n  transform: scale(0.1);\n}\n.dialog-trans-enter-active,\n.dialog-trans-leave-active {\n  transition: transform 0.3s;\n}")
 ;(function(){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -9975,7 +9940,6 @@ exports.default = {
 
     methods: {
         close: function close() {
-            alert('closing');
             this.closed = true;
         }
     }
@@ -9992,13 +9956,13 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-723c04ca", __vue__options__)
+    hotAPI.createRecord("data-v-687d0440", __vue__options__)
   } else {
-    hotAPI.reload("data-v-723c04ca", __vue__options__)
+    hotAPI.reload("data-v-687d0440", __vue__options__)
   }
 })()}
 
-},{"vue":32,"vue-hot-reload-api":31,"vueify/lib/insert-css":33}],38:[function(require,module,exports){
+},{"vue":29,"vue-hot-reload-api":28,"vueify/lib/insert-css":30}],35:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 40px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 40px;\n  border-radius: 30px;\n  background: #fff;\n  border: 1px solid #000;\n  padding: 2px;\n}\n.avatar-frame img {\n  width: 25px;\n  height: 25px;\n  vertical-align: middle;\n  border-radius: 40px;\n}\n.name {\n  font-size: 20px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}")
 ;(function(){
 "use strict";
@@ -10026,12 +9990,12 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-2c1a1f4d", __vue__options__)
+    hotAPI.createRecord("data-v-7ed70268", __vue__options__)
   } else {
-    hotAPI.reload("data-v-2c1a1f4d", __vue__options__)
+    hotAPI.reload("data-v-7ed70268", __vue__options__)
   }
 })()}
 
-},{"vue":32,"vue-hot-reload-api":31,"vueify/lib/insert-css":33}]},{},[34])
+},{"vue":29,"vue-hot-reload-api":28,"vueify/lib/insert-css":30}]},{},[31])
 
 //# sourceMappingURL=index.js.map

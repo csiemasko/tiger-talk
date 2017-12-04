@@ -1,9 +1,9 @@
 <template lang="pug">
 .message
-    .message-profile
+    .message-profile(v-if="m.type != 'system'")
         img(:src="user.avatar" alt="user.name")
         .name {{ user.name }}
-    .message-content {{ message }}
+    .message-content(:class="{system_message: m.type == 'system'}") {{ message }}
 </template>
 <script>
 export default {
@@ -49,4 +49,6 @@ export default {
     .message-content
         flex: 1 1 auto
         font-size: 10px        
+    .system_message
+        color: #f00        
 </style>

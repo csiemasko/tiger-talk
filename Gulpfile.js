@@ -18,7 +18,6 @@ var compileJS = () => {
         .transform(babel)
         .transform(vueify);
        
-       
         return bundle.bundle().
         pipe(vsource('index.js')).
         pipe(vbuffer()).         

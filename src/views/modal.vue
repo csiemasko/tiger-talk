@@ -23,8 +23,7 @@ export default {
         }
     },
     methods: {
-        close() {
-            alert('closing');
+        close() {           
             this.closed = true;        
         }
     }
