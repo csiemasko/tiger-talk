@@ -47,13 +47,12 @@ export default {
     margin: 0 auto
     margin-top: 100px;    
     box-sizing: border-box
-    background: #fff
-    max-width: 75%
+    background: #fff   
     border-radius: 20px
     box-shadow: 0 0 30px rgba(0,0,0,.5)
     position: relative
     transform: scale(1)
-    display: flex
+    display: inline-flex
     align-items: flex-start
     flex-direction: column
     .dialog-header
@@ -67,9 +66,16 @@ export default {
         background: #000
         font-weight: 100
         font-size: 16px
+        border-top-left-radius: 20px
+        border-top-right-radius: 20px
         .fa.fa-times-circle-o
+            position: absolute
+            top: 10
+            right: 10
+            cursor: pointer
             float: right
             color: #ff0
+            top: 0
     .dialog-body
         flex: 1 1 auto
         margin: 20px

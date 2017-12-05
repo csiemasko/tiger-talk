@@ -1,5 +1,5 @@
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert(".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 40px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 40px;\n  border-radius: 30px;\n  background: #fff;\n  border: 1px solid #000;\n  padding: 2px;\n}\n.avatar-frame img {\n  width: 25px;\n  height: 25px;\n  vertical-align: middle;\n  border-radius: 40px;\n}\n.name {\n  font-size: 20px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert(".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 35px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 30px;\n  height: 30px;\n}\n.avatar-frame img {\n  width: 30px;\n  height: 30px;\n  vertical-align: middle;\n  border-radius: 40px;\n  box-shadow: 0 0 10px rgba(255,255,255,0.4);\n}\n.name {\n  font-size: 14px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}\n")
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20,12 +20,12 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache[".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 40px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 40px;\n  border-radius: 30px;\n  background: #fff;\n  border: 1px solid #000;\n  padding: 2px;\n}\n.avatar-frame img {\n  width: 25px;\n  height: 25px;\n  vertical-align: middle;\n  border-radius: 40px;\n}\n.name {\n  font-size: 20px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}\n"] = false
+    __vueify_insert__.cache[".user-frame {\n  margin: 5px 0 5px 0;\n  background: #000;\n  height: 35px;\n  padding: 5px;\n}\n.avatar-frame {\n  display: inline;\n  width: 30px;\n  height: 30px;\n}\n.avatar-frame img {\n  width: 30px;\n  height: 30px;\n  vertical-align: middle;\n  border-radius: 40px;\n  box-shadow: 0 0 10px rgba(255,255,255,0.4);\n}\n.name {\n  font-size: 14px;\n  font-weight: 100;\n  margin-left: 20px;\n  color: #fff;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-7ed70268", module.exports)
+    hotAPI.createRecord("_v-2c1a1f4d", module.exports)
   } else {
-    hotAPI.update("_v-7ed70268", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-2c1a1f4d", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
