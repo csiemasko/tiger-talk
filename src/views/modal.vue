@@ -56,9 +56,10 @@ export default {
     align-items: flex-start
     flex-direction: column
     .dialog-header
+        user-select: none
         box-sizing: border-box
         flex: 0 1 auto        
-        top: 0
+        top: 0;
         width: 100%
         padding: 5px
         text-align: center
@@ -68,14 +69,16 @@ export default {
         font-size: 16px
         border-top-left-radius: 20px
         border-top-right-radius: 20px
-        .fa.fa-times-circle-o
-            position: absolute
-            top: 10
-            right: 10
-            cursor: pointer
+        .close-button
+            position: fixed
             float: right
-            color: #ff0
-            top: 0
+            right: 20
+            top: 10
+            .fa.fa-times-circle-o
+                position: fixed            
+                cursor: pointer
+                float: right
+                color: #ff0        
     .dialog-body
         flex: 1 1 auto
         margin: 20px

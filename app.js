@@ -61,19 +61,19 @@ app.post('/login', (req,res) => {//Get user
 app.post('/create', (req,res) => {//New user
     var data = req.body;
     console.log(data);
-    var existing = getUser(data.name, 'name');
-    console.log(existing);
-    if (existing != undefined) {
-        res.json({result: 'fail', message: 'User name already exists!', type: 'name-exist'});
-    } else {
-        mongo.connect(dbConnection, (e,db) => {
-            var newUser = data;
-            newUser.creationDate = new Date();
-            newUser.type = 'local';                        
-            db.collection('users').insertOne(newUser);            
-            res.json({result: 'success', user: newUser });
-        });
-    }
+    var existing = getUser(data.name, 'name', existing => {
+        if (existing != undefined) {
+            res.json({result: 'fail', message: 'User name already exists!', type: 'name-exist'});
+        } else {
+            mongo.connect(dbConnection, (e,db) => {
+                var newUser = data;
+                newUser.creationDate = new Date();
+                newUser.type = 'local';                        
+                db.collection('users').insertOne(newUser);            
+                res.json({result: 'success', user: newUser });
+            });
+        }
+    });
 });
 function getUser(userData, type, callback) {
     console.log(`data:${userData} | field:${type}`);
@@ -119,10 +119,13 @@ io.sockets.on('connection', socket => {
     });
     socket.on('msg>>', m => {        
         console.log(m);
+        mongo.connect(dbConnection, (e,db) => {
+            db.collection('messages').insertOne({user_id: m._id, timestamp: new Date(), text: m.text});
+        });
         socket.emit('<<msg', { user: _.find(connections, { _id: _mongo.ObjectID(m._id) }), message: { text: m.text, type: 'user-message', timestamp: new Date()}});
     });
 });
 
 
-server.listen(7331);
-app.listen(1337);
+server.listen(8082);
+app.listen(8081);

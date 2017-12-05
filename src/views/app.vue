@@ -1,20 +1,25 @@
 <template lang="pug">
 .app
-    .login(v-if="!session.loggedIn")
-        modal(header="Log In to Tiger Talk")
-            .modal-label User Name
-            input(v-model="session.userLogin" placeholder="Username")  
-            .modal-label Password          
-            input(v-model="session.userPass" type="password" placeholder="Password")
-            .modal-label(v-show="ui.newUser") Verify Password          
-            input(v-show="ui.newUser" v-model="session.userPassVerify" type="password" placeholder="Verify Password")
-            .login-button(@click="login")
-                i.fa.fa-sign-in
-                | {{ ui.newUser ? 'Create + Sign In' : 'Sign In' }}
-            gbutton(@glogin="googleSignIn($event)")               
-            .login-button(v-show="!ui.newUser" @click='ui.newUser = true' value="Create Account")
-                i.fa.fa-plus
-                | Create Account
+    transition(name='modal-show')
+        .login(v-if="!session.loggedIn")
+            modal(header="Log In to Tiger Talk")
+                transition-group(name='t-login-field' @enter="loginEnter")
+                    .login-field(key=1)
+                        .modal-label User Name
+                        input(v-model="session.userLogin" placeholder="Username")  
+                    .login-field(key=2)
+                        .modal-label Password          
+                        input(v-model="session.userPass" type="password" placeholder="Password")
+                    .login-field(v-show="ui.newUser" key=3)
+                        .modal-label Verify Password          
+                        input(v-show="ui.newUser" v-model="session.userPassVerify" type="password" placeholder="Verify Password")            
+                    .login-button(@click="login" key=4)
+                        i.fa.fa-sign-in
+                        | {{ ui.newUser ? 'Create + Sign In' : 'Sign In' }}
+                    gbutton(@glogin="googleSignIn($event)" key=5)               
+                    .login-button(v-show="!ui.newUser" @click='ui.newUser = true' value="Create Account" key=6)
+                        i.fa.fa-plus
+                        | Create Account
     transition(name="header-enter")
         .header(v-show="session.loggedIn")
             h1 {{ ui.title }}
@@ -61,17 +66,16 @@ export default {
             entryBox: '',            
             messages: [            
             ],           
-            users: [
-                debugUser
+            users: [             
             ]
         }
     },
     methods: {
         getSession() {
+            return null;
             return document.cookie ? document.cookie : null;
         },
-        googleSignIn(e) {
-            console.log('final user?---');
+        googleSignIn(e) {      
             console.log(e);
             this.session.loggedIn = true;
             this.session.currentUser = e;
@@ -105,6 +109,15 @@ export default {
             });
             }  
         },
+        loginEnter(el, done) {
+            var d = el.dataset.index * 150;
+            setTimeout(() => {
+                Velocity(el, {'margin-top': '30px'},{ complete: done });
+            }, d);
+        },
+        loginLeave(el, done) {
+
+        },
         createUser() {
             if (this.session.userPass != this.session.userPassVerify) {
                 this.toast('Passwords do not match!');
@@ -131,8 +144,7 @@ export default {
         },
         connect(validUser) {
             window.socket = io('http://localhost:7331', { query: `uid=${validUser._id}` });
-            window.socket.on('<<msg', m => {
-                console.log('message~~');
+            window.socket.on('<<msg', m => {          
                 console.log(m);
                 this.messages.push({user: m.user, message: m.message });
             });
@@ -189,16 +201,18 @@ $tu-yellow = #FFCC00
         opacity: 1
         font-weight: 100
         font-family: 'Oswald'
-        font-size: 36px
-.login modal input 
+        font-size: 42px
+.login input 
     padding: 5px
 .modal-label
     display: inline-block
     font-size: 9px
     margin-right: 10px
     vertical-align: middle
+    width: 90px
+    text-align: right 
 .g-signin-button, .login-button
-    width: 200px
+    width: 100%
     height: 30px
     font-size: 16px
     cursor: pointer
@@ -248,11 +262,13 @@ $tu-yellow = #FFCC00
             border: 1px solid #999
             font-size: 30px
             padding: 20px
-            border-radius: 5px
+            border-radius: 10px
             box-sizing: border-box
         .fa-paper-plane
             margin-left: -30px
             color: #333
+.login-field
+    display: block
 .userlist
     margin: 100px 10px 0px 10px
     width: 200px    
@@ -280,22 +296,26 @@ $tu-yellow = #FFCC00
     transition: 1s all
 .users-enter-enter, .users-enter-leave-to
     margin-left: 400px
+.t-login-field-enter-active, .t-login-field-leave-active
+    transition: .5s all
+.t-login-field-enter, .t-login-field-enter-leave-to
+    margin-top: 50px
+    opacity: 0
+.t-login-field-move
+    transition: .5s all
+.modal-show-enter-active, .modal-show-leave-active
+    transition: .5s all
+    transform: scale(1)
+.modal-show-enter, .modal-show-leave-to
+    transform: scale(2)
 @keyframes toast-show {
    0% {
         opacity: 0;
         margin-top: 30px;
-    }        
-    25% {
-        opacity: 1;
-        margin-top: 0;
-    }
-    50% {
-        opacity: 1;
-        margin-top: 0;
-    }        
+    }                 
     100% {
-        opacity: 0;
-        margin-top: 30px;
+        opacity: 1;
+        margin-top: 0px;
     }
 }
     

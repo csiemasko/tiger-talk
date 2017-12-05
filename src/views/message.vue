@@ -4,7 +4,7 @@
         img(:src="user.avatar" alt="user.name")
         .info-frame
             .name {{ user.name }}
-            .timestamp {{ `@${moment(new Date(), 'M/D/YYYY')}`` }}
+            .timestamp {{ `@${'Now'}` }}
     .message-frame
         .message-content(:class="{system_message: message.type == 'system'}") {{ message.text }}
 </template>

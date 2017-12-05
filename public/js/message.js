@@ -18,7 +18,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div class=\"message\"><div class=\"message-profile\" v-if=\"message.type != 'system'\"><img :src=\"user.avatar\" alt=\"user.name\"/><div class=\"info-frame\"><div class=\"name\">{{ user.name }}</div><div class=\"timestamp\">{{ `@${moment(new Date(), 'M/D/YYYY')}`` }}</div></div></div><div class=\"message-frame\"><div class=\"message-content\" :class=\"{system_message: message.type == 'system'}\">{{ message.text }}</div></div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "<div class=\"message\"><div class=\"message-profile\" v-if=\"message.type != 'system'\"><img :src=\"user.avatar\" alt=\"user.name\"/><div class=\"info-frame\"><div class=\"name\">{{ user.name }}</div><div class=\"timestamp\">{{ `@${'Now'}` }}</div></div></div><div class=\"message-frame\"><div class=\"message-content\" :class=\"{system_message: message.type == 'system'}\">{{ message.text }}</div></div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -28,8 +28,8 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-23a26875", module.exports)
+    hotAPI.createRecord("_v-6ea2eb7a", module.exports)
   } else {
-    hotAPI.update("_v-23a26875", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6ea2eb7a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
