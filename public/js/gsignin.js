@@ -50,8 +50,8 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-57aa013c", module.exports)
+    hotAPI.createRecord("_v-e0f0756a", module.exports)
   } else {
-    hotAPI.update("_v-57aa013c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-e0f0756a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}

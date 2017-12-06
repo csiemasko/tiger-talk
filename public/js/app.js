@@ -33,7 +33,7 @@ exports.default = {
             },
             entryBox: '',
             messages: [],
-            users: [debugUser]
+            users: []
         };
     },
 
@@ -43,7 +43,6 @@ exports.default = {
             return document.cookie ? document.cookie : null;
         },
         googleSignIn: function googleSignIn(e) {
-            console.log('final user?---');
             console.log(e);
             this.session.loggedIn = true;
             this.session.currentUser = e;
@@ -120,9 +119,8 @@ exports.default = {
         connect: function connect(validUser) {
             var _this4 = this;
 
-            window.socket = io('http://localhost:7331', { query: 'uid=' + validUser._id });
+            window.socket = io('http://10.128.173.8:8082', { query: 'uid=' + validUser._id });
             window.socket.on('<<msg', function (m) {
-                console.log('message~~');
                 console.log(m);
                 _this4.messages.push({ user: m.user, message: m.message });
             });
@@ -153,8 +151,8 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-871da3d8", module.exports)
+    hotAPI.createRecord("_v-b98d5cba", module.exports)
   } else {
-    hotAPI.update("_v-871da3d8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-b98d5cba", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}

@@ -1,1 +1,1 @@
-{"version":3,"sources":["index.styl"],"names":[],"mappings":"AAAA,KACI,WAAY,WACZ,QAAS,EACT,OAAQ,EACR,WAAY,KACZ,YAAa","file":"index.css","sourcesContent":["body\r\n    box-sizing: border-box\r\n    padding: 0\r\n    margin: 0\r\n    background: #ddd\r\n    font-family: 'Open Sans'"]}
+{"version":3,"sources":["index.styl"],"names":[],"mappings":"AAAA,KACI,WAAY,WACZ,QAAS,EACT,OAAQ,EACR,WAAY,KACZ,YAAa","file":"index.css","sourcesContent":["body\n    box-sizing: border-box\n    padding: 0\n    margin: 0\n    background: #ddd\n    font-family: 'Open Sans'"]}

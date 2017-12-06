@@ -14246,7 +14246,6 @@ exports.insert = function (css) {
 var Vue = require('vue');
 var App = require('../views/app.vue');
 var GoogleSignIn = require('vue-google-signin-button');
-//import GoogleSignIn from 'vue-google-signin-button';
 
 window.onload = () => {
     Vue.prototype.moment = require('moment');
@@ -14293,7 +14292,7 @@ exports.default = {
             },
             entryBox: '',
             messages: [],
-            users: [debugUser]
+            users: []
         };
     },
 
@@ -14303,7 +14302,6 @@ exports.default = {
             return document.cookie ? document.cookie : null;
         },
         googleSignIn: function googleSignIn(e) {
-            console.log('final user?---');
             console.log(e);
             this.session.loggedIn = true;
             this.session.currentUser = e;
@@ -14377,9 +14375,8 @@ exports.default = {
         connect: function connect(validUser) {
             var _this4 = this;
 
-            window.socket = io('http://localhost:7331', { query: 'uid=' + validUser._id });
+            window.socket = io('http://10.128.173.8:8082', { query: 'uid=' + validUser._id });
             window.socket.on('<<msg', function (m) {
-                console.log('message~~');
                 console.log(m);
                 _this4.messages.push({ user: m.user, message: m.message });
             });
@@ -14411,9 +14408,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-871da3d8", __vue__options__)
+    hotAPI.createRecord("data-v-b98d5cba", __vue__options__)
   } else {
-    hotAPI.reload("data-v-871da3d8", __vue__options__)
+    hotAPI.reload("data-v-b98d5cba", __vue__options__)
   }
 })()}
 
@@ -14463,9 +14460,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-57aa013c", __vue__options__)
+    hotAPI.createRecord("data-v-e0f0756a", __vue__options__)
   } else {
-    hotAPI.reload("data-v-57aa013c", __vue__options__)
+    hotAPI.reload("data-v-e0f0756a", __vue__options__)
   }
 })()}
 
@@ -14501,9 +14498,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-6ea2eb7a", __vue__options__)
+    hotAPI.createRecord("data-v-b2fea0ee", __vue__options__)
   } else {
-    hotAPI.reload("data-v-6ea2eb7a", __vue__options__)
+    hotAPI.reload("data-v-b2fea0ee", __vue__options__)
   }
 })()}
 
@@ -14546,9 +14543,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-687d0440", __vue__options__)
+    hotAPI.createRecord("data-v-210ef9af", __vue__options__)
   } else {
-    hotAPI.reload("data-v-687d0440", __vue__options__)
+    hotAPI.reload("data-v-210ef9af", __vue__options__)
   }
 })()}
 
@@ -14580,9 +14577,9 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   module.hot.accept()
   module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7ed70268", __vue__options__)
+    hotAPI.createRecord("data-v-711350b9", __vue__options__)
   } else {
-    hotAPI.reload("data-v-7ed70268", __vue__options__)
+    hotAPI.reload("data-v-711350b9", __vue__options__)
   }
 })()}
 

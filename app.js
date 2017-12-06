@@ -103,7 +103,7 @@ io.sockets.on('connection', socket => {
                 user.ip = socket.handshake.address;
                 console.log(`\t∟ IP ${user.ip} recognized as '${user.name}'`);
                 connections.push(user);
-                socket.emit('+users', {name: user.name, list: connections });  
+                io.sockets.emit('+users', {name: user.name, list: connections });  
             }
            
           });
@@ -122,7 +122,7 @@ io.sockets.on('connection', socket => {
         mongo.connect(dbConnection, (e,db) => {
             db.collection('messages').insertOne({user_id: m._id, timestamp: new Date(), text: m.text});
         });
-        socket.emit('<<msg', { user: _.find(connections, { _id: _mongo.ObjectID(m._id) }), message: { text: m.text, type: 'user-message', timestamp: new Date()}});
+        io.sockets.emit('<<msg', { user: _.find(connections, { _id: _mongo.ObjectID(m._id) }), message: { text: m.text, type: 'user-message', timestamp: new Date()}});
     });
 });
 

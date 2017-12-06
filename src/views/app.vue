@@ -143,7 +143,7 @@ export default {
             }            
         },
         connect(validUser) {
-            window.socket = io('http://localhost:7331', { query: `uid=${validUser._id}` });
+            window.socket = io('http://10.128.173.8:8082', { query: `uid=${validUser._id}` });
             window.socket.on('<<msg', m => {          
                 console.log(m);
                 this.messages.push({user: m.user, message: m.message });
